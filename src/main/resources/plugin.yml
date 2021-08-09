@@ -1,0 +1,8 @@
+name: AchievementBorder
+version: ${project.version}
+main: com.github.sh0ckr6.achievementborder.AchievementBorder
+api-version: 1.17
+prefix: ACHV-BORDER
+authors: [ sh0ckR6 ]
+description: Gradually expand your world the more achievements you get!
+website: https://github.com/sh0ckR6
