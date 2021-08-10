@@ -2,8 +2,6 @@ package com.github.sh0ckr6.achievementborder;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.swing.border.Border;
-
 public final class AchievementBorder extends JavaPlugin {
   
   /**
