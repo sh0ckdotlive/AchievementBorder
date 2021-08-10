@@ -29,7 +29,6 @@ public class BorderControl implements Listener {
   @EventHandler
   public void onAchievementUnlock(PlayerAdvancementDoneEvent event) {
     if (isValidAdvancement(event.getAdvancement())) {
-      Bukkit.getLogger().log(Level.INFO, "tryhard (onAchievementUnlock)");
       World world = Bukkit.getWorlds().get(0);
       WorldBorder border = world.getWorldBorder();
   
@@ -39,7 +38,6 @@ public class BorderControl implements Listener {
   
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event) {
-    Bukkit.getLogger().log(Level.FINE, "who the fuck are you (onPlayerJoin)");
     int completedAdvancements = getCompletedAdvancementsCount(event.getPlayer());
     WorldBorder border = event.getPlayer().getWorld().getWorldBorder();
     
@@ -55,7 +53,6 @@ public class BorderControl implements Listener {
   public void onPlayerLeave(PlayerQuitEvent event) {
     WorldBorder border = event.getPlayer().getWorld().getWorldBorder();
     if (!(getCompletedAdvancementsCount(event.getPlayer()) * 5 + 1 >= border.getSize())) return;
-    Bukkit.getLogger().log(Level.INFO, "hey fucker we need to close the border down");
     
     int highestAdvancementCount = 0;
     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
