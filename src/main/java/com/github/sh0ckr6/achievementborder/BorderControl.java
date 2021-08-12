@@ -153,6 +153,33 @@ public class BorderControl implements Listener {
   }
   
   /**
+   * Helper function for retrieving a list of valid advancements that a {@link Player} has completed.<br>
+   *
+   * Example: Loop through all a player's completed advancements and print them to Bukkit's logger<br>
+   * <code>
+   * for ({@link Advancement} completedAdvancement : getCompletedAdvancements(player) {<br>
+   *   Bukkit.getLogger().info(completedAdvancement.getKey().toString());<br>
+   * }
+   * </code>
+   *
+   * @param player The player to check completed advancements for
+   * @return A list of the player's completed advancements (if any)
+   */
+  private List<Advancement> getCompletedAdvancements(Player player) {
+    // Loop through all advancements and return a list of valid advancements that the player has completed.
+    List<Advancement> completedAdvancements = new ArrayList<>();
+    Iterator<Advancement> it = Bukkit.advancementIterator();
+    while (it.hasNext()) {
+      Advancement advancement = it.next();
+      if (!isValidAdvancement(advancement)) continue;
+      if (player.getAdvancementProgress(advancement).isDone()) {
+        completedAdvancements.add(advancement);
+      }
+    }
+    return completedAdvancements;
+  }
+  
+  /**
    * Helper function for determining if an {@link Advancement} is actually an advancement<br>
    * For some reason recipe unlocks are considered {@link Advancement}s and  I think
    * I lost my mind trying to solve this for over a solid 2-3 hours.
