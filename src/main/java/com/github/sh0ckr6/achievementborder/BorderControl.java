@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,7 +13,10 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Listener class to handle events relating to controlling the world border
@@ -38,6 +42,16 @@ public class BorderControl implements Listener {
   public BorderControl(AchievementBorder plugin) {
     this.plugin = plugin;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
+  
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      for (Advancement completedAdvancement : getCompletedAdvancements(player)) {
+        if (!plugin.advancements.contains(completedAdvancement)) {
+          plugin.advancements.add(completedAdvancement);
+        }
+      }
+    }
+    
+    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
   }
   
   /**
@@ -52,13 +66,34 @@ public class BorderControl implements Listener {
     // Check if the unlocked advancement is actually an advancement
     // For some reason recipe unlocks also trigger this event
     // and it's absolutely infuriating.
-    if (isValidAdvancement(event.getAdvancement())) {
-      // Update the border's size
-      World world = Bukkit.getWorlds().get(0);
-      WorldBorder border = world.getWorldBorder();
+    if (!isValidAdvancement(event.getAdvancement())) return;
+    
+    // Update the border's size
+    World world = Bukkit.getWorlds().get(0);
+    WorldBorder border = world.getWorldBorder();
   
-      border.setSize(border.getSize() + 5, 1);
+    if (!plugin.advancements.contains(event.getAdvancement())) {
+      plugin.advancements.add(event.getAdvancement());
     }
+  
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      AdvancementProgress progress = player.getAdvancementProgress(event.getAdvancement());
+      for (String criterion : progress.getRemainingCriteria()) {
+        progress.awardCriteria(criterion);
+      }
+    }
+  
+    updateBorder(border);
+  }
+  
+  /**
+   * Helper function to update a world's border.
+   * @param border The border to update
+   * @author sh0ckR6
+   * @since 1.0
+   */
+  private void updateBorder(WorldBorder border) {
+    border.setSize(plugin.advancements.size() * 5 + 1, 1);
   }
   
   /**
@@ -139,17 +174,7 @@ public class BorderControl implements Listener {
    * @since 1.0
    */
   private int getCompletedAdvancementsCount(Player player) {
-    // Iterate over all advancements and count + return the ones completed
-    int advancementsCompleted = 0;
-    Iterator<Advancement> it = Bukkit.advancementIterator();
-    while (it.hasNext()) {
-      Advancement advancement = it.next();
-      if (player.getAdvancementProgress(advancement).isDone()) {
-        advancementsCompleted++;
-      }
-    }
-    
-    return advancementsCompleted;
+    return getCompletedAdvancements(player).size();
   }
   
   /**
