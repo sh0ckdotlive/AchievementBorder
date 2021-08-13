@@ -68,10 +68,7 @@ public class BorderControl implements Listener {
     // and it's absolutely infuriating.
     if (!isValidAdvancement(event.getAdvancement())) return;
     
-    // Update the border's size
-    World world = Bukkit.getWorlds().get(0);
-    WorldBorder border = world.getWorldBorder();
-  
+    // Update the master list if needed
     if (!plugin.advancements.contains(event.getAdvancement())) {
       plugin.advancements.add(event.getAdvancement());
     }
@@ -83,7 +80,10 @@ public class BorderControl implements Listener {
       }
     }
   
-    updateBorder(border);
+    // Update every border's size
+    for (World world : Bukkit.getWorlds()) {
+      updateBorder(world.getWorldBorder());
+    }
   }
   
   /**
@@ -97,17 +97,14 @@ public class BorderControl implements Listener {
   }
   
   /**
-   * Updates the border's size to the most unlocked advancements when a new player joins
-   * This is to ensure the border is the correct size if the new player has more advancements
-   * than the highest player on the server<br>
-   * <b>NOTE</b>: This really only affects multiplayer and will not have any effect on singleplayer.<br>
+   * Updates the border's size to include the new {@link Player}'s {@link Advancement}s.<br><br>
    *
    * Example:<br>
-   * {@code PlayerA} has <b>8 advancements</b>, and so the border size is <b>41 blocks</b>.<br>
-   * The new player, {@code PlayerB}, has <b>10 advancements</b>, and so the border
-   * should be updated to <b>51 blocks</b> to accurately reflect this.<br><br>
-   *
-   * <b>IMPORTANT: THIS MAY BE REMOVED IN A FUTURE UPDATE, IT NEEDS SOME PLAY-TESTING TO SEE IF IT SHOULD STAY.</b>
+   * {@code PlayerA} has the Advancements "Stone Age" and "Acquire Hardware." The border size should be 11 blocks.
+   * {@code PlayerB} joins, and has the Advancements "Ice Bucket Challenge" and "Isn't It Iron Pick." {@code PlayerB}'s
+   * advancements get added to the master list and the border's size grows to 21 blocks. {@code PlayerA} receives
+   * the "Ice Bucket Challenge" and "Isn't it Iron Pick" advancements, while {@code PlayerB} receives the "Stone Age"
+   * and "Acquire Hardware" advancements.
    *
    * @param event The {@link PlayerJoinEvent} passed to this function automatically
    * @author sh0ckR6
@@ -117,51 +114,17 @@ public class BorderControl implements Listener {
   public void onPlayerJoin(PlayerJoinEvent event) {
     WorldBorder border = event.getPlayer().getWorld().getWorldBorder();
     
-    // Get the amount of completed advancements of the new player and compare it to the current border's size
-    int completedAdvancements = getCompletedAdvancementsCount(event.getPlayer());
-    if (completedAdvancements * 5 + 1 > border.getSize()) {
-      // Update the border if we need to and alert all online players
-      border.setSize(completedAdvancements * 5 + 1, 1);
-      for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-        player.sendMessage(ChatColor.GOLD + "A new player with more advancements than the highest player has joined, changing border...");
+    // Add any achievements this player has to the master list if needed
+    for (Advancement advancement : getCompletedAdvancements(event.getPlayer())) {
+      if (!plugin.advancements.contains(advancement)) {
+        plugin.advancements.add(advancement);
       }
     }
-  }
-  
-  /**
-   * Update the border's size to the most unlocked advancements when a player disconnects
-   * This is to prevent the border from being bigger than the current unlocked achievements<br>
-   * <b>NOTE</b>: This really only affects multiplayer and will not have any effect on singleplayer.<br>
-   *
-   * Example:<br>
-   * {@code PlayerA} currently has <b>8 advancements</b>, so the border is set to <b>41 blocks</b>.<br>
-   * Once {@code PlayerA} leaves, {@code PlayerC} becomes the new advancement leader with
-   * <b>7 advancements</b>, so the border is set to <b>36 blocks</b> to reflect this.<br><br>
-   *
-   * <b>IMPORTANT: THIS MAY BE REMOVED IN A FUTURE UPDATE, IT NEEDS SOME PLAY-TESTING TO SEE IF IT SHOULD STAY.</b>
-   *
-   * @param event The {@link PlayerQuitEvent} passed to this function automatically
-   * @author sh0ckR6
-   * @since 1.0
-   */
-  @EventHandler
-  public void onPlayerLeave(PlayerQuitEvent event) {
-    WorldBorder border = event.getPlayer().getWorld().getWorldBorder();
-    // Cancel this action if the player is not the advancement leader
-    if (!(getCompletedAdvancementsCount(event.getPlayer()) * 5 + 1 >= border.getSize())) return;
     
-    // Find the new advancement leader and update the border accordingly
-    int highestAdvancementCount = 0;
-    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-      // Even though the player in event.getPlayer() has now disconnected, they are still
-      // in getOnlinePlayers() and need to be sorted out of advancement leader finding.
-      if (player == event.getPlayer()) continue;
-      
-      highestAdvancementCount = Math.max(highestAdvancementCount, getCompletedAdvancementsCount(player));
-      player.sendMessage(ChatColor.RED + "A player with more advancements than the highest player has left, changing border...");
+    // Update every border's size
+    for (World world : Bukkit.getWorlds()) {
+      updateBorder(world.getWorldBorder());
     }
-    
-    border.setSize(highestAdvancementCount * 5 + 1, 1);
   }
   
   /**
