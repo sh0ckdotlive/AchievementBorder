@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,7 +13,10 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Listener class to handle events relating to controlling the world border
@@ -38,6 +42,16 @@ public class BorderControl implements Listener {
   public BorderControl(AchievementBorder plugin) {
     this.plugin = plugin;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
+  
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      for (Advancement completedAdvancement : getCompletedAdvancements(player)) {
+        if (!plugin.advancements.contains(completedAdvancement)) {
+          plugin.advancements.add(completedAdvancement);
+        }
+      }
+    }
+    
+    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
   }
   
   /**
@@ -52,27 +66,45 @@ public class BorderControl implements Listener {
     // Check if the unlocked advancement is actually an advancement
     // For some reason recipe unlocks also trigger this event
     // and it's absolutely infuriating.
-    if (isValidAdvancement(event.getAdvancement())) {
-      // Update the border's size
-      World world = Bukkit.getWorlds().get(0);
-      WorldBorder border = world.getWorldBorder();
+    if (!isValidAdvancement(event.getAdvancement())) return;
+    
+    // Update the master list if needed
+    if (!plugin.advancements.contains(event.getAdvancement())) {
+      plugin.advancements.add(event.getAdvancement());
+    }
   
-      border.setSize(border.getSize() + 5, 1);
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      AdvancementProgress progress = player.getAdvancementProgress(event.getAdvancement());
+      for (String criterion : progress.getRemainingCriteria()) {
+        progress.awardCriteria(criterion);
+      }
+    }
+  
+    // Update every border's size
+    for (World world : Bukkit.getWorlds()) {
+      updateBorder(world.getWorldBorder());
     }
   }
   
   /**
-   * Updates the border's size to the most unlocked advancements when a new player joins
-   * This is to ensure the border is the correct size if the new player has more advancements
-   * than the highest player on the server<br>
-   * <b>NOTE</b>: This really only affects multiplayer and will not have any effect on singleplayer.<br>
+   * Helper function to update a world's border.
+   * @param border The border to update
+   * @author sh0ckR6
+   * @since 1.0
+   */
+  private void updateBorder(WorldBorder border) {
+    border.setSize(plugin.advancements.size() * 5 + 1, 1);
+  }
+  
+  /**
+   * Updates the border's size to include the new {@link Player}'s {@link Advancement}s.<br><br>
    *
    * Example:<br>
-   * {@code PlayerA} has <b>8 advancements</b>, and so the border size is <b>41 blocks</b>.<br>
-   * The new player, {@code PlayerB}, has <b>10 advancements</b>, and so the border
-   * should be updated to <b>51 blocks</b> to accurately reflect this.<br><br>
-   *
-   * <b>IMPORTANT: THIS MAY BE REMOVED IN A FUTURE UPDATE, IT NEEDS SOME PLAY-TESTING TO SEE IF IT SHOULD STAY.</b>
+   * {@code PlayerA} has the Advancements "Stone Age" and "Acquire Hardware." The border size should be 11 blocks.
+   * {@code PlayerB} joins, and has the Advancements "Ice Bucket Challenge" and "Isn't It Iron Pick." {@code PlayerB}'s
+   * advancements get added to the master list and the border's size grows to 21 blocks. {@code PlayerA} receives
+   * the "Ice Bucket Challenge" and "Isn't it Iron Pick" advancements, while {@code PlayerB} receives the "Stone Age"
+   * and "Acquire Hardware" advancements.
    *
    * @param event The {@link PlayerJoinEvent} passed to this function automatically
    * @author sh0ckR6
@@ -82,51 +114,35 @@ public class BorderControl implements Listener {
   public void onPlayerJoin(PlayerJoinEvent event) {
     WorldBorder border = event.getPlayer().getWorld().getWorldBorder();
     
-    // Get the amount of completed advancements of the new player and compare it to the current border's size
-    int completedAdvancements = getCompletedAdvancementsCount(event.getPlayer());
-    if (completedAdvancements * 5 + 1 > border.getSize()) {
-      // Update the border if we need to and alert all online players
-      border.setSize(completedAdvancements * 5 + 1, 1);
-      for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-        player.sendMessage(ChatColor.GOLD + "A new player with more advancements than the highest player has joined, changing border...");
+    // Add any achievements this player has to the master list if needed
+    for (Advancement advancement : getCompletedAdvancements(event.getPlayer())) {
+      if (!plugin.advancements.contains(advancement)) {
+        plugin.advancements.add(advancement);
+        
+        // Update the online player's to include have these achievements unlocked
+        for (Player player : Bukkit.getOnlinePlayers()) {
+          AdvancementProgress advancementProgress = player.getAdvancementProgress(advancement);
+          for (String remainingCriterion : advancementProgress.getRemainingCriteria()) {
+            advancementProgress.awardCriteria(remainingCriterion);
+          }
+        }
       }
     }
-  }
-  
-  /**
-   * Update the border's size to the most unlocked advancements when a player disconnects
-   * This is to prevent the border from being bigger than the current unlocked achievements<br>
-   * <b>NOTE</b>: This really only affects multiplayer and will not have any effect on singleplayer.<br>
-   *
-   * Example:<br>
-   * {@code PlayerA} currently has <b>8 advancements</b>, so the border is set to <b>41 blocks</b>.<br>
-   * Once {@code PlayerA} leaves, {@code PlayerC} becomes the new advancement leader with
-   * <b>7 advancements</b>, so the border is set to <b>36 blocks</b> to reflect this.<br><br>
-   *
-   * <b>IMPORTANT: THIS MAY BE REMOVED IN A FUTURE UPDATE, IT NEEDS SOME PLAY-TESTING TO SEE IF IT SHOULD STAY.</b>
-   *
-   * @param event The {@link PlayerQuitEvent} passed to this function automatically
-   * @author sh0ckR6
-   * @since 1.0
-   */
-  @EventHandler
-  public void onPlayerLeave(PlayerQuitEvent event) {
-    WorldBorder border = event.getPlayer().getWorld().getWorldBorder();
-    // Cancel this action if the player is not the advancement leader
-    if (!(getCompletedAdvancementsCount(event.getPlayer()) * 5 + 1 >= border.getSize())) return;
     
-    // Find the new advancement leader and update the border accordingly
-    int highestAdvancementCount = 0;
-    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-      // Even though the player in event.getPlayer() has now disconnected, they are still
-      // in getOnlinePlayers() and need to be sorted out of advancement leader finding.
-      if (player == event.getPlayer()) continue;
-      
-      highestAdvancementCount = Math.max(highestAdvancementCount, getCompletedAdvancementsCount(player));
-      player.sendMessage(ChatColor.RED + "A player with more advancements than the highest player has left, changing border...");
+    // Award all achievements that the new player is missing from the master list
+    for (Advancement advancement : plugin.advancements) {
+      AdvancementProgress advancementProgress = event.getPlayer().getAdvancementProgress(advancement);
+      if (!advancementProgress.isDone()) {
+        for (String remainingCriterion : advancementProgress.getRemainingCriteria()) {
+          advancementProgress.awardCriteria(remainingCriterion);
+        }
+      }
     }
     
-    border.setSize(highestAdvancementCount * 5 + 1, 1);
+    // Update every border's size
+    for (World world : Bukkit.getWorlds()) {
+      updateBorder(world.getWorldBorder());
+    }
   }
   
   /**
@@ -139,17 +155,34 @@ public class BorderControl implements Listener {
    * @since 1.0
    */
   private int getCompletedAdvancementsCount(Player player) {
-    // Iterate over all advancements and count + return the ones completed
-    int advancementsCompleted = 0;
+    return getCompletedAdvancements(player).size();
+  }
+  
+  /**
+   * Helper function for retrieving a list of valid advancements that a {@link Player} has completed.<br>
+   *
+   * Example: Loop through all a player's completed advancements and print them to Bukkit's logger<br>
+   * <code>
+   * for ({@link Advancement} completedAdvancement : getCompletedAdvancements(player) {<br>
+   *   Bukkit.getLogger().info(completedAdvancement.getKey().toString());<br>
+   * }
+   * </code>
+   *
+   * @param player The player to check completed advancements for
+   * @return A list of the player's completed advancements (if any)
+   */
+  private List<Advancement> getCompletedAdvancements(Player player) {
+    // Loop through all advancements and return a list of valid advancements that the player has completed.
+    List<Advancement> completedAdvancements = new ArrayList<>();
     Iterator<Advancement> it = Bukkit.advancementIterator();
     while (it.hasNext()) {
       Advancement advancement = it.next();
+      if (!isValidAdvancement(advancement)) continue;
       if (player.getAdvancementProgress(advancement).isDone()) {
-        advancementsCompleted++;
+        completedAdvancements.add(advancement);
       }
     }
-    
-    return advancementsCompleted;
+    return completedAdvancements;
   }
   
   /**
