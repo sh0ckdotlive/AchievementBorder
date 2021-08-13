@@ -118,6 +118,24 @@ public class BorderControl implements Listener {
     for (Advancement advancement : getCompletedAdvancements(event.getPlayer())) {
       if (!plugin.advancements.contains(advancement)) {
         plugin.advancements.add(advancement);
+        
+        // Update the online player's to include have these achievements unlocked
+        for (Player player : Bukkit.getOnlinePlayers()) {
+          AdvancementProgress advancementProgress = player.getAdvancementProgress(advancement);
+          for (String remainingCriterion : advancementProgress.getRemainingCriteria()) {
+            advancementProgress.awardCriteria(remainingCriterion);
+          }
+        }
+      }
+    }
+    
+    // Award all achievements that the new player is missing from the master list
+    for (Advancement advancement : plugin.advancements) {
+      AdvancementProgress advancementProgress = event.getPlayer().getAdvancementProgress(advancement);
+      if (!advancementProgress.isDone()) {
+        for (String remainingCriterion : advancementProgress.getRemainingCriteria()) {
+          advancementProgress.awardCriteria(remainingCriterion);
+        }
       }
     }
     
