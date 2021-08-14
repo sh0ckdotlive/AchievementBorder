@@ -1,6 +1,9 @@
 # AchievementBorder
 Expand your world with achievements!
 
+## NOTICE
+**THIS PLUGIN IS NOT YET AVAILABLE**. I'm still working on some fixes and some minor changes, but the plugin should be released by Sunday. While still playable, I'm not releasing a version until I get it polished. If you really want to use the plugin, you can use the instructions in the Build section of this readme to build a version of the plugin.
+
 ## Overview
 Welcome to AchievementBorder! This plugin will start your world with a one-block border, and you can expand that border by completing achievements!
 
