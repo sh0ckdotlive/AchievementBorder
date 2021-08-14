@@ -13,13 +13,13 @@ import java.util.Set;
 /** Utilities for configuration files
  *
  * @author Kalcoder (sh0ckR6)
- * @since 1.0
+ * @since 1.1
  */
 public class ConfigManager {
   
   /** List of cached configurations
    *
-   * @since 1.0
+   * @since 1.1
    */
   private static HashMap<YamlConfiguration, File> configurations = new HashMap<>();
   
@@ -27,7 +27,7 @@ public class ConfigManager {
    * @param plugin The plugin that uses BukkitUtils
    *
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static void loadAllConfigs(JavaPlugin plugin) {
     if (!plugin.getDataFolder().exists()) {
@@ -49,7 +49,7 @@ public class ConfigManager {
    * @param plugin The plugin that uses BukkitUtils
    *
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static void createNewConfig(String configName, JavaPlugin plugin) {
     File configFile = new File(plugin.getDataFolder(), "$configName.yml");
@@ -74,7 +74,7 @@ public class ConfigManager {
    *
    * @return true if the given configuration was found
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static boolean configurationExists(String configName, JavaPlugin plugin) {
     File configFile = new File(plugin.getDataFolder(), "$configName.yml");
@@ -88,7 +88,7 @@ public class ConfigManager {
    * @return The keys
    * @throws MissingResourceException if configuration was not found
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static Set<String> getAllKeysFromConfig(String name, Boolean deep) throws MissingResourceException {
     for (File file : configurations.values()) {
@@ -105,7 +105,7 @@ public class ConfigManager {
    * @return The value that was read
    * @throws MissingResourceException if configuration was not found
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static Object readFromConfig(String name, String path) throws MissingResourceException {
     for (File file : configurations.values()) {
@@ -120,7 +120,7 @@ public class ConfigManager {
    *
    * @return The value that was read
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static Object readFromConfig(YamlConfiguration config, String path) {
     return config.get(path);
@@ -132,7 +132,7 @@ public class ConfigManager {
    *
    * @return The value that was read
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static Object readFromConfig(File configFile, String path) {
     return YamlConfiguration.loadConfiguration(configFile).get(path);
@@ -145,7 +145,7 @@ public class ConfigManager {
    *
    * @throws MissingResourceException if configuration was not found
    * @author Kalcoder (sh0ckR6)
-   * @since 1.0
+   * @since 1.1
    */
   public static void setInConfig(String name, String path, Object value) throws MissingResourceException {
     for (File file : configurations.values()) {
