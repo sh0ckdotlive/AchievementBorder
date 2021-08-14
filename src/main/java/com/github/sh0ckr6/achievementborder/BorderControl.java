@@ -1,7 +1,6 @@
 package com.github.sh0ckr6.achievementborder;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
@@ -11,12 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Listener class to handle events relating to controlling the world border
@@ -36,6 +33,7 @@ public class BorderControl implements Listener {
   /**
    * Registers this class as a {@link Listener} for the provided plugin
    *
+   * @param plugin The plugin to register this class under
    * @author sh0ckR6
    * @since 1.0
    */
