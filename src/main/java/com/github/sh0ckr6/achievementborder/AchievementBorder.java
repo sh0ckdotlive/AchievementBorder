@@ -21,6 +21,7 @@ public final class AchievementBorder extends JavaPlugin {
     // Plugin startup logic
     new BorderControl(this);
     new WorldSetup(this);
+    new MobControl(this);
   }
   
   /**
