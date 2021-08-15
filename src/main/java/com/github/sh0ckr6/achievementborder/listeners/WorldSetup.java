@@ -1,5 +1,6 @@
-package com.github.sh0ckr6.achievementborder;
+package com.github.sh0ckr6.achievementborder.listeners;
 
+import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
