@@ -1,6 +1,7 @@
 package com.github.sh0ckr6.achievementborder;
 
 import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
+import com.github.sh0ckr6.achievementborder.listeners.MobControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.plugin.java.JavaPlugin;

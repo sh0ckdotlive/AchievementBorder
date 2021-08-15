@@ -1,7 +1,8 @@
-package com.github.sh0ckr6.achievementborder;
+package com.github.sh0ckr6.achievementborder.listeners;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
+import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Entity;
