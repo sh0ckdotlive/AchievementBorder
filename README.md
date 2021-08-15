@@ -22,6 +22,15 @@ and while a workaround is possible, it is very long and complicated, and this pr
 Head over to the [releases page](https://github.com/sh0ckR6/AchievementBorder/releases) and download the latest version of the plugin.
 Install the plugin like you would any other plugin by dragging it into your server's `plugins` folder.
 
+## Custom Recipes
+This plugin adds custom recipes to the game so that the game is completable.
+###### End stone recipe
+![Recipe for End stone](https://i.imgur.com/VILuj13.png)
+###### End portal frame recipe
+![Recipe for End portal frame](https://i.imgur.com/4cP3QoR.png)
+
+Without these recipes, the game would not be completable as the nearest stronghold can never be access with the border restrictions.
+
 ## Build
 If you want to contribute to the project or build from breaking changes, you can clone the repository and build the project with Maven using the following command:
 ```
