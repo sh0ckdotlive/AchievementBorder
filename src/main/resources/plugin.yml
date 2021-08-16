@@ -6,3 +6,7 @@ prefix: ACHV-BORDER
 authors: [ sh0ckR6 ]
 description: Gradually expand your world the more achievements you get!
 website: https://github.com/sh0ckR6
+commands:
+  config:
+    description: Change configuration settings
+    usage: /config reload

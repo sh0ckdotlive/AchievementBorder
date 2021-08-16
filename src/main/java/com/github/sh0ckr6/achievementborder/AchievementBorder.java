@@ -94,5 +94,6 @@ public final class AchievementBorder extends JavaPlugin {
   }
   
   private void registerCommands() {
+    new ConfigCommand(this);
   }
 }

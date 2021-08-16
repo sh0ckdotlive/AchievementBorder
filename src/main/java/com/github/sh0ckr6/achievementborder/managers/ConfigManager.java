@@ -1,5 +1,6 @@
 package com.github.sh0ckr6.achievementborder.managers;
 
+import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -211,5 +212,10 @@ public class ConfigManager {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+  
+  public static void reloadConfigs(AchievementBorder plugin) {
+    configurations = new HashMap<>();
+    loadAllConfigs(plugin);
   }
 }
