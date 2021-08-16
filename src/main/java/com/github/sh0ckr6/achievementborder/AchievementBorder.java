@@ -1,17 +1,13 @@
 package com.github.sh0ckr6.achievementborder;
 
 import com.github.sh0ckr6.achievementborder.builders.ShapedRecipeBuilder;
+import com.github.sh0ckr6.achievementborder.commands.ConfigCommand;
 import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
+import org.bukkit.Material;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -35,6 +31,7 @@ public final class AchievementBorder extends JavaPlugin {
     new BorderControl(this);
     new WorldSetup(this);
     
+    registerCommands();
     registerRecipes();
   }
   
@@ -94,5 +91,15 @@ public final class AchievementBorder extends JavaPlugin {
             .setIngredient('E', Material.END_STONE)
             .setIngredient('O', Material.OBSIDIAN)
             .register();
+  }
+  
+  /**
+   * Helper function to register commands
+   *
+   * @author sh0ckR6
+   * @since 1.1
+   */
+  private void registerCommands() {
+    new ConfigCommand(this);
   }
 }
