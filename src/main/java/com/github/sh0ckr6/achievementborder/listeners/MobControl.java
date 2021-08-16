@@ -88,9 +88,9 @@ public class MobControl implements Listener {
     /**
      * Removes the number of hostile mobs (if it is hostile) that are alive
      *
+     * @param event Entity Removed Event
      * @author gtaEPIC
      * @since 1.1
-     * @param event Entity Removed Event
      */
     @EventHandler(ignoreCancelled = true)
     public void onEntityRemoveFromWorld(EntityRemoveFromWorldEvent event) {
