@@ -3,6 +3,7 @@ package com.github.sh0ckr6.achievementborder;
 import com.github.sh0ckr6.achievementborder.builders.ShapedRecipeBuilder;
 import com.github.sh0ckr6.achievementborder.commands.ConfigCommand;
 import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
+import com.github.sh0ckr6.achievementborder.listeners.MobControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.Material;
@@ -30,6 +31,7 @@ public final class AchievementBorder extends JavaPlugin {
     
     new BorderControl(this);
     new WorldSetup(this);
+    new MobControl(this);
     
     registerCommands();
     registerRecipes();
