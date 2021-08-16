@@ -60,12 +60,12 @@ public class MobControl implements Listener {
     }
 
     /**
-     * Checks to see if an entity is a hostile mob from the overworld
+     * Checks to see if an entity is a hostile mob
      *
-     * @author gtaEPIC
-     * @since 1.1
      * @param entity The entity to check
      * @return True if hostile
+     * @author gtaEPIC
+     * @since 1.1
      */
     private boolean isHostile(Entity entity) {
         return entity instanceof Monster
