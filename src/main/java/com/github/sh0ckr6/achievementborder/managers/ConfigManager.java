@@ -200,6 +200,8 @@ public class ConfigManager {
    *
    * @param config The {@link YamlConfiguration} to save
    * @throws MissingResourceException If the requested configuration could not be found
+   * @author sh0ckR6
+   * @since 1.1
    */
   public static void saveConfig(YamlConfiguration config) throws MissingResourceException {
     File configFile = configurations.get(config);
