@@ -24,7 +24,7 @@ public class ConfigManager {
   private static HashMap<YamlConfiguration, File> configurations = new HashMap<>();
   
   /** Loads all configurations and caches them
-   * @param plugin The plugin that uses BukkitUtils
+   * @param plugin The current plugin
    *
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
@@ -46,7 +46,7 @@ public class ConfigManager {
   
   /** Creates a new configuration
    * @param configName The name of the configuration
-   * @param plugin The plugin that uses BukkitUtils
+   * @param plugin The current plugin
    *
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
@@ -70,7 +70,7 @@ public class ConfigManager {
   
   /** Checks if a configuration exists
    * @param configName The name of the configuration
-   * @param plugin The plugin that uses BukkitUtils
+   * @param plugin The current plugin
    *
    * @return true if the given configuration was found
    * @author Kalcoder (sh0ckR6)
