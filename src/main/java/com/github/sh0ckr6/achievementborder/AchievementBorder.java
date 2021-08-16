@@ -38,6 +38,7 @@ public final class AchievementBorder extends JavaPlugin {
   @Override
   public void onDisable() {
     // Plugin shutdown logic
+    ConfigManager.setInConfig("config", "advancements", advancements.stream().map(advancement -> advancement.getKey().toString()).toArray());
   }
   
   /**
@@ -56,6 +57,8 @@ public final class AchievementBorder extends JavaPlugin {
     // Setup config.yml defaults
     YamlConfiguration config = ConfigManager.getConfig("config");
     config.addDefault("setup-complete", false);
+    config.addDefault("starting-size", 1);
+    config.addDefault("advancements", new String[]{});
     config.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
   }
