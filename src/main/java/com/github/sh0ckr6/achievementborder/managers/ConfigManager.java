@@ -177,4 +177,36 @@ public class ConfigManager {
     }
     throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
   }
+  
+  /**
+   * Get a {@link YamlConfiguration} by name
+   *
+   * @param name The name of the configuration
+   * @return The found configuration, if any
+   * @throws MissingResourceException If the requested configuration could not be found
+   * @author sh0ckR6
+   * @since 1.1
+   */
+  public static YamlConfiguration getConfig(String name) throws MissingResourceException {
+    for (YamlConfiguration config : configurations.keySet()) {
+      if (configurations.get(config).getName().equals(name + ".yml")) return config;
+    }
+    throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
+  }
+  
+  /**
+   * Save a {@link YamlConfiguration} to the corresponding {@link File}
+   *
+   * @param config The {@link YamlConfiguration} to save
+   * @throws MissingResourceException If the requested configuration could not be found
+   */
+  public static void saveConfig(YamlConfiguration config) throws MissingResourceException {
+    File configFile = configurations.get(config);
+    if (configFile == null) throw new MissingResourceException("The requested configuration file could not be found!", config.getName() + ".yml", config.getName());
+    try {
+      config.save(configFile);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }
