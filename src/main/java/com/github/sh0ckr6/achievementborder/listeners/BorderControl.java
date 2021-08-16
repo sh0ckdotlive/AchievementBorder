@@ -1,6 +1,7 @@
 package com.github.sh0ckr6.achievementborder.listeners;
 
 import com.github.sh0ckr6.achievementborder.AchievementBorder;
+import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
@@ -32,7 +33,7 @@ public class BorderControl implements Listener {
   private AchievementBorder plugin;
   
   /**
-   * Registers this class as a {@link Listener} for the provided plugin
+   * Registers this class as a {@link Listener} for the provided plugin and handle initial border setup
    *
    * @param plugin The plugin to register this class under
    * @author sh0ckR6
@@ -42,10 +43,31 @@ public class BorderControl implements Listener {
     this.plugin = plugin;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   
+    // Get all saved advancements
+    List<String> advancements = ConfigManager.readFromConfig("config", "advancements");
+    Iterator<Advancement> it = Bukkit.advancementIterator();
+    while (it.hasNext()){
+      Advancement adv = it.next();
+      if (advancements.contains(adv.getKey().toString())) {
+        plugin.advancements.add(adv);
+      }
+    }
+    
+    // Get all online players' advancements
     for (Player player : Bukkit.getOnlinePlayers()) {
       for (Advancement completedAdvancement : getCompletedAdvancements(player)) {
         if (!plugin.advancements.contains(completedAdvancement)) {
           plugin.advancements.add(completedAdvancement);
+        }
+      }
+    }
+  
+    // Award all online players any missing advancements
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      for (Advancement advancement : plugin.advancements) {
+        AdvancementProgress advancementProgress = player.getAdvancementProgress(advancement);
+        for (String remainingCriterion : advancementProgress.getRemainingCriteria()) {
+          advancementProgress.awardCriteria(remainingCriterion);
         }
       }
     }
@@ -89,7 +111,7 @@ public class BorderControl implements Listener {
    * @since 1.0
    */
   private void updateBorder(WorldBorder border) {
-    border.setSize(plugin.advancements.size() * 5 + 1, 1);
+    border.setSize(plugin.advancements.size() * 5 + ConfigManager.<Integer>readFromConfig("config", "starting-size"), 1);
   }
   
   /**
