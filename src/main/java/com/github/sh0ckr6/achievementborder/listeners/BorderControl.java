@@ -101,10 +101,7 @@ public class BorderControl implements Listener {
       }
     }
   
-    // Update every border's size
-    for (World world : Bukkit.getWorlds()) {
-      updateBorder(world.getWorldBorder());
-    }
+    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
   }
   
   /**
@@ -160,10 +157,7 @@ public class BorderControl implements Listener {
       }
     }
     
-    // Update every border's size
-    for (World world : Bukkit.getWorlds()) {
-      updateBorder(world.getWorldBorder());
-    }
+    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
   }
   
   /**

@@ -1,10 +1,17 @@
 package com.github.sh0ckr6.achievementborder;
 
+import com.github.sh0ckr6.achievementborder.builders.ShapedRecipeBuilder;
 import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -27,6 +34,8 @@ public final class AchievementBorder extends JavaPlugin {
     
     new BorderControl(this);
     new WorldSetup(this);
+    
+    registerRecipes();
   }
   
   /**
@@ -61,5 +70,29 @@ public final class AchievementBorder extends JavaPlugin {
     config.addDefault("advancements", new String[]{});
     config.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
+  }
+  
+  /**
+   * Helper function to register recipes
+   *
+   * @author sh0ckR6
+   * @since 1.0
+   */
+  private void registerRecipes() {
+    new ShapedRecipeBuilder()
+            .setRecipeKey("end_stone")
+            .setResult(Material.END_STONE)
+            .setShape("EEE", "ECE", "EEE")
+            .setIngredient('E', Material.ENDER_PEARL)
+            .setIngredient('C', Material.COBBLESTONE)
+            .register();
+    
+    new ShapedRecipeBuilder()
+            .setRecipeKey("end_portal_frame")
+            .setResult(Material.END_PORTAL_FRAME)
+            .setShape("E E", "EOE", "EEE")
+            .setIngredient('E', Material.END_STONE)
+            .setIngredient('O', Material.OBSIDIAN)
+            .register();
   }
 }

@@ -1,0 +1,66 @@
+name: Bug Report
+description: Run into an issue? Report it here!
+
+title: "[BUG] - "
+labels: ["type: bug", "status: needs triage"]
+assignees:
+  - sh0ckR6
+
+body:
+  # Ensure the user is not requesting a duplicate feature
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: "Please ensure that there is not an issue open for this bug (this helps me get to issues and features faster!)"
+      options:
+        - label: I have searched for this bug in the existing issues
+          required: true
+  # Version
+  - type: input
+    attributes:
+      label: Version
+      description: What version are you currently using?
+      placeholder: Ex. v1.0
+    validations:
+      required: true
+  # Downloaded from?
+  - type: dropdown
+    attributes:
+      label: Download
+      description: How did you download the plugin?
+      options:
+        - GitHub Release
+        - Built from source
+        - Other
+    validations:
+      required: true
+  # Bug description
+  - type: textarea
+    attributes:
+      label: Bug Description
+      description: What is the bug you are reporting? Give a clear description of the issue
+    validations:
+      required: true
+  # Steps to reproduce
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: How do you reproduce this bug?
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+        etc.
+
+        If you cannot reproduce this bug, please type something like "N/A"
+    validations:
+      required: true
+  # Anything else
+  - type: textarea
+    attributes:
+      label: Anything Else?
+      description: Is there anything else you would like to add?
+      placeholder: |
+        Add any extra information you have here.
+
+        Pro-tip: You can drag files into this area! You can upload information like log files to this box!
