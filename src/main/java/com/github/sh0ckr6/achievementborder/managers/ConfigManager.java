@@ -170,6 +170,7 @@ public class ConfigManager {
         config.set(path, value);
         try {
           config.save(file);
+          return;
         } catch (IOException e) {
           e.printStackTrace();
         }
