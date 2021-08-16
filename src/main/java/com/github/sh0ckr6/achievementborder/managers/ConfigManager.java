@@ -214,6 +214,13 @@ public class ConfigManager {
     }
   }
   
+  /**
+   * Reload all {@link YamlConfiguration}s from disk
+   *
+   * @param plugin The current plugin
+   * @author sh0ckR6
+   * @since 1.1
+   */
   public static void reloadConfigs(AchievementBorder plugin) {
     configurations = new HashMap<>();
     loadAllConfigs(plugin);

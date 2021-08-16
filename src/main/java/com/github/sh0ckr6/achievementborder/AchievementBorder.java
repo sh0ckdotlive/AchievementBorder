@@ -93,6 +93,12 @@ public final class AchievementBorder extends JavaPlugin {
             .register();
   }
   
+  /**
+   * Helper function to register commands
+   *
+   * @author sh0ckR6
+   * @since 1.1
+   */
   private void registerCommands() {
     new ConfigCommand(this);
   }
