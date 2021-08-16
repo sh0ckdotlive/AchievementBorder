@@ -26,7 +26,7 @@ public class WorldSetup implements Listener {
   private AchievementBorder plugin;
   
   /**
-   * Holds if the setup has been completed yet
+   * False if the setup has not been completed yet
    *
    * @since 1.1
    */
