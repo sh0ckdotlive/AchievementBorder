@@ -81,6 +81,22 @@ public class ConfigManager {
     return configFile.exists();
   }
   
+  /**
+   * Generate a new configuration file if the file is not present
+   *
+   * @param configName The name of the configuration to generate
+   * @param plugin The current plugin
+   * @return If a new file was created
+   * @author sh0ckR6
+   * @since 1.1
+   */
+  public static boolean createIfNotPresent(String configName, JavaPlugin plugin) {
+    boolean exists = configurationExists(configName, plugin);
+    
+    if (!exists) createNewConfig(configName, plugin);
+    return !exists;
+  }
+  
   /** Retrieve all keys from configuration
    * @param name The name of the configuration to retrieve keys from
    * @param deep If false will read only top-level keys
