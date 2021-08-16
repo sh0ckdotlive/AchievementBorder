@@ -2,6 +2,7 @@ package com.github.sh0ckr6.achievementborder;
 
 import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
+import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,6 +22,8 @@ public final class AchievementBorder extends JavaPlugin {
   @Override
   public void onEnable() {
     // Plugin startup logic
+    setupConfigs();
+    
     new BorderControl(this);
     new WorldSetup(this);
   }
@@ -34,5 +37,19 @@ public final class AchievementBorder extends JavaPlugin {
   @Override
   public void onDisable() {
     // Plugin shutdown logic
+  }
+  
+  /**
+   * Helper function for setting up configuration files
+   *
+   * @author sh0ckR6
+   * @since 1.1
+   */
+  private void setupConfigs() {
+    // Load and cache all configs
+    ConfigManager.loadAllConfigs(this);
+    
+    // Generate configs if not present
+    ConfigManager.createIfNotPresent("config", this);
   }
 }
