@@ -6,6 +6,7 @@ import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
