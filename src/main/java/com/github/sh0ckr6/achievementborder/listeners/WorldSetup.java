@@ -1,6 +1,7 @@
 package com.github.sh0ckr6.achievementborder.listeners;
 
 import com.github.sh0ckr6.achievementborder.AchievementBorder;
+import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,6 +26,13 @@ public class WorldSetup implements Listener {
   private AchievementBorder plugin;
   
   /**
+   * Holds if the setup has been completed yet
+   *
+   * @since 1.1
+   */
+  private boolean setupCompleted = false;
+  
+  /**
    * Register this class as a {@link Listener} for the provided plugin
    *
    * @param plugin The plugin to register this class under
@@ -46,7 +54,9 @@ public class WorldSetup implements Listener {
   @EventHandler(priority = EventPriority.LOWEST)
   public void onPlayerJoin(PlayerJoinEvent event) {
     // Only continue if this is first time setup
-    if (!plugin.advancements.isEmpty()) return;
+    if (setupCompleted) return; // Check variable to see if setup has been completed.
+    setupCompleted = ConfigManager.readFromConfig("config", "setup-complete"); // Pull from config if we haven't completed setup.
+    if (setupCompleted) return; // Check the config's result and return if the config says we've completed setup.
     
     // Get the border location from the player's spawn and initialize the border
     Player player = event.getPlayer();
@@ -62,5 +72,9 @@ public class WorldSetup implements Listener {
     for (int i = 1; i <= 3; i++) {
       player.getWorld().getBlockAt(new Location(playerSpawnLocation.getWorld(), playerSpawnLocation.getX(), playerSpawnLocation.getY() - i, playerSpawnLocation.getZ())).setType(Material.OAK_LOG);
     }
+    
+    // Mark that we've completed setup
+    setupCompleted = true;
+    ConfigManager.setInConfig("config", "setup-complete", true);
   }
 }

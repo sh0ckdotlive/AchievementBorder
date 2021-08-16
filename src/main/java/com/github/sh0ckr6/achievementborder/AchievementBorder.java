@@ -4,6 +4,7 @@ import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -51,5 +52,11 @@ public final class AchievementBorder extends JavaPlugin {
     
     // Generate configs if not present
     ConfigManager.createIfNotPresent("config", this);
+    
+    // Setup config.yml defaults
+    YamlConfiguration config = ConfigManager.getConfig("config");
+    config.addDefault("setup-complete", false);
+    config.options().copyDefaults(true);
+    ConfigManager.saveConfig(config);
   }
 }
