@@ -68,7 +68,7 @@ public class MobControl implements Listener {
      * @since 1.1
      */
     private boolean isHostile(Entity entity) {
-        return entity instanceof Monster
+        return entity instanceof Monster;
     }
 
     /**
