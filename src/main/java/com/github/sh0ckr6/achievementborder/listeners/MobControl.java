@@ -82,7 +82,7 @@ public class MobControl implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityAddToWorld(EntityAddToWorldEvent event) {
         if (!isHostile(event.getEntity())) return;
-        if (getMaxHostile() < hostileMobs + 1) event.getEntity().remove(); // Cancel spawn
+        if (getMaxHostiles() < hostileMobs + 1) event.getEntity().remove(); // Cancel spawn
         hostileMobs++;
     }
 
