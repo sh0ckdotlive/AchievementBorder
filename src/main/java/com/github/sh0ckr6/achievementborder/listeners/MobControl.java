@@ -25,7 +25,12 @@ public class MobControl implements Listener {
      */
     private final AchievementBorder plugin;
 
-    private int hostileMobs = 0; // Number of hostile mobs that are spawned
+    /**
+    * Number of hostile mobs that are spawned
+    * 
+    * @since 1.1
+    */
+    private int hostileMobs = 0;
 
     /**
      * Registers this class as a {@link Listener} for the provided plugin
@@ -44,16 +49,14 @@ public class MobControl implements Listener {
     /**
      * Calculates the number of Hostile Mobs should be allowed.
      *
+     * @return The max number of Hostile Mobs allowed
      * @author gtaEPIC
      * @since 1.1
-     * @return The max number of Hostile Mobs allowed
      */
-    private int getMaxHostile() {
+    private int getMaxHostiles() {
         WorldBorder border = Bukkit.getWorlds().get(0).getWorldBorder();
         double size = border.getSize();
-        if (size > 16) {
-            return (int) size;
-        }else return 0;
+        return size > 16 ? (int) size : 0;
     }
 
     /**
@@ -65,12 +68,7 @@ public class MobControl implements Listener {
      * @return True if hostile
      */
     private boolean isHostile(Entity entity) {
-        String[] hostile = {"Creeper", "Endermite", "Evoker", "Guardian", "Husk", "Silverfish", "Skeleton", "Slime",
-        "Stray", "Vex", "Vindicator", "Witch", "Zombie", "Zombie Villager"};
-        for (String name : hostile) {
-            if (entity.getName().equals(name)) return true;
-        }
-        return false;
+        return entity instanceof Monster
     }
 
     /**
@@ -82,12 +80,9 @@ public class MobControl implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onEntityAddToWorld(EntityAddToWorldEvent event) {
-        plugin.getLogger().log(Level.INFO, event.getEntity().getName() + " | " + isHostile(event.getEntity()));
-        if (isHostile(event.getEntity())) {
-            plugin.getLogger().log(Level.INFO, hostileMobs + " / " + getMaxHostile());
-            if (getMaxHostile() < hostileMobs + 1) event.getEntity().remove(); // Cancel spawn
-            hostileMobs++;
-        }
+        if (!isHostile(event.getEntity())) return;
+        if (getMaxHostile() < hostileMobs + 1) event.getEntity().remove(); // Cancel spawn
+        hostileMobs++;
     }
 
     /**
@@ -99,9 +94,7 @@ public class MobControl implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onEntityRemoveFromWorld(EntityRemoveFromWorldEvent event) {
-        if (isHostile(event.getEntity())) {
-            plugin.getLogger().log(Level.INFO, event.getEntity().getName() + " was removed");
-            hostileMobs--;
-        }
+        if (!isHostile(event.getEntity())) return;
+        hostileMobs--;
     }
 }
