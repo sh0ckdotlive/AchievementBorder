@@ -125,7 +125,7 @@ public class ConfigManager {
    */
   public static <T> T readFromConfig(String name, String path) throws MissingResourceException {
     for (File file : configurations.values()) {
-      if (file.getName().substring(0, file.getName().length() - 4).equalsIgnoreCase(name)) return (T) YamlConfiguration.loadConfiguration(file).get(path);
+      if (file.getName().equals(name + ".yml")) return (T) YamlConfiguration.loadConfiguration(file).get(path);
     }
     throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
   }
@@ -165,7 +165,7 @@ public class ConfigManager {
    */
   public static <T> void setInConfig(String name, String path, T value) throws MissingResourceException {
     for (File file : configurations.values()) {
-      if (file.getName().substring(0, file.getName().length() - 4).equalsIgnoreCase(name)) {
+      if (file.getName().equalsIgnoreCase(name + ".yml")) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         config.set(path, value);
         try {
