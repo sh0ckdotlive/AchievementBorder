@@ -74,9 +74,9 @@ public class MobControl implements Listener {
     /**
      * Runs to check every new entity that is added to the game
      *
+     * @param event New Entity Event
      * @author gtaEPIC
      * @since 1.1
-     * @param event New Entity Event
      */
     @EventHandler(ignoreCancelled = true)
     public void onEntityAddToWorld(EntityAddToWorldEvent event) {
