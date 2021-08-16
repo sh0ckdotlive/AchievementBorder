@@ -55,8 +55,7 @@ public class WorldSetup implements Listener {
   public void onPlayerJoin(PlayerJoinEvent event) {
     // Only continue if this is first time setup
     if (setupCompleted) return; // Check variable to see if setup has been completed.
-    setupCompleted = ConfigManager.readFromConfig("config", "setup-complete"); // Pull from config if we haven't completed setup.
-    if (setupCompleted) return; // Check the config's result and return if the config says we've completed setup.
+    if (ConfigManager.readFromConfig("config", "setup-complete")) return; // Check the config's result and return if the config says we've completed setup.
     
     // Get the border location from the player's spawn and initialize the border
     Player player = event.getPlayer();
