@@ -52,7 +52,7 @@ public class ConfigManager {
    * @since 1.1
    */
   public static void createNewConfig(String configName, JavaPlugin plugin) {
-    File configFile = new File(plugin.getDataFolder(), "$configName.yml");
+    File configFile = new File(plugin.getDataFolder(), configName + ".yml");
     
     if (configFile.exists()) {
       plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Error: Could not create new config called " + configName + " because it already exists!");
@@ -77,7 +77,7 @@ public class ConfigManager {
    * @since 1.1
    */
   public static boolean configurationExists(String configName, JavaPlugin plugin) {
-    File configFile = new File(plugin.getDataFolder(), "$configName.yml");
+    File configFile = new File(plugin.getDataFolder(), configName + ".yml");
     return configFile.exists();
   }
   
@@ -123,9 +123,9 @@ public class ConfigManager {
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
    */
-  public static Object readFromConfig(String name, String path) throws MissingResourceException {
+  public static <T> T readFromConfig(String name, String path) throws MissingResourceException {
     for (File file : configurations.values()) {
-      if (file.getName().substring(0, file.getName().length() - 4).equalsIgnoreCase(name)) return YamlConfiguration.loadConfiguration(file).get(path);
+      if (file.getName().substring(0, file.getName().length() - 4).equalsIgnoreCase(name)) return (T) YamlConfiguration.loadConfiguration(file).get(path);
     }
     throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
   }
@@ -163,7 +163,7 @@ public class ConfigManager {
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
    */
-  public static void setInConfig(String name, String path, Object value) throws MissingResourceException {
+  public static <T> void setInConfig(String name, String path, T value) throws MissingResourceException {
     for (File file : configurations.values()) {
       if (file.getName().substring(0, file.getName().length() - 4).equalsIgnoreCase(name)) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -173,7 +173,6 @@ public class ConfigManager {
         } catch (IOException e) {
           e.printStackTrace();
         }
-        
       }
     }
     throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
