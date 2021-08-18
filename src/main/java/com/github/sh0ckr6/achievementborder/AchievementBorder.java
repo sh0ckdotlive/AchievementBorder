@@ -6,13 +6,17 @@ import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.MobControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class AchievementBorder extends JavaPlugin {
   
@@ -67,6 +71,11 @@ public final class AchievementBorder extends JavaPlugin {
     config.addDefault("setup-complete", false);
     config.addDefault("starting-size", 1);
     config.addDefault("advancements", new String[]{});
+    Map<String, Boolean> borderWorlds = new HashMap<>();
+    for (World world : Bukkit.getWorlds()) {
+      borderWorlds.put(world.getName(), false);
+    }
+    config.addDefault("borders", borderWorlds);
     config.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
   }
