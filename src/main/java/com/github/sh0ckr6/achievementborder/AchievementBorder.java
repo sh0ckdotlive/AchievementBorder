@@ -73,7 +73,7 @@ public final class AchievementBorder extends JavaPlugin {
     config.addDefault("advancements", new String[]{});
     Map<String, Boolean> borderWorlds = new HashMap<>();
     for (World world : Bukkit.getWorlds()) {
-      borderWorlds.put(world.getName(), false);
+      borderWorlds.put(world.getName(), true);
     }
     config.addDefault("borders", borderWorlds);
     config.options().copyDefaults(true);
