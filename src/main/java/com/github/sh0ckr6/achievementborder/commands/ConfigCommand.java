@@ -54,6 +54,17 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
     return true;
   }
   
+  /**
+   * Generate tab completion for the arguments of this command
+   *
+   * @param sender The {@link CommandSender} of the command
+   * @param command The {@link Command} that was run
+   * @param alias The alias name of this command that was used
+   * @param args The current list of arguments
+   * @return A list of options for tab completion
+   * @author sh0ckR6
+   * @since latest
+   */
   @Override
   public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
     List<String> tabList = new ArrayList<>();
@@ -73,6 +84,8 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
    *
    * @param sender The {@link CommandSender} that sent the command
    * @param args The arguments of this subcommand
+   * @author sh0ckR6
+   * @since latest
    */
   private void handleReload(CommandSender sender, String[] args) {
     String configName = args[0];

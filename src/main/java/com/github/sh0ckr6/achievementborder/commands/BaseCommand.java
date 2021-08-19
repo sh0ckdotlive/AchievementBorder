@@ -21,6 +21,11 @@ public abstract class BaseCommand implements CommandExecutor {
    * @since 1.1
    */
   protected AchievementBorder plugin;
+  /**
+   * The name of this command
+   *
+   * @since latest
+   */
   protected String name;
   
   /**

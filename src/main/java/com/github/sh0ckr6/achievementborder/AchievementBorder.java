@@ -18,6 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class representing the current {@link JavaPlugin}
+ *
+ * {@link #onEnable()} is the main entry point of the plugin
+ *
+ * @author sh0ckR6
+ * @author gtaEPIC
+ * @since 1.0
+ */
 public final class AchievementBorder extends JavaPlugin {
   
   public List<Advancement> advancements = new ArrayList<>();
@@ -26,6 +35,7 @@ public final class AchievementBorder extends JavaPlugin {
    * Plugin setup
    *
    * @author sh0ckR6
+   * @author gtaEPIC
    * @since 1.0
    */
   @Override

@@ -16,13 +16,13 @@ import java.util.*;
  */
 public class ConfigManager {
   
-  /** List of cached configurations
+  /** List of cached {@link Configuration}s
    *
    * @since 1.1
    */
   private static List<Configuration> configurations = new ArrayList<>();
   
-  /** Loads all configurations and caches them
+  /** Loads all {@link Configuration}s and caches them
    * @param plugin The current plugin
    *
    * @author Kalcoder (sh0ckR6)
@@ -43,7 +43,7 @@ public class ConfigManager {
     }
   }
   
-  /** Creates a new configuration
+  /** Creates a new {@link Configuration}
    * @param configName The name of the configuration
    * @param plugin The current plugin
    *
@@ -67,10 +67,10 @@ public class ConfigManager {
     configurations.add(new Configuration(YamlConfiguration.loadConfiguration(configFile), configFile, configName));
   }
   
-  /** Checks if a configuration exists
-   * @param configName The name of the configuration
+  /** Checks if a {@link Configuration} exists
+   * @param configName The name of the {@link Configuration}
    *
-   * @return true if the given configuration was found
+   * @return True if the requested {@link Configuration} was found
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
    */
@@ -98,7 +98,7 @@ public class ConfigManager {
    * @param name The name of the configuration to retrieve keys from
    * @param deep If false will read only top-level keys
    *
-   * @return The keys
+   * @return All retrieved keys
    * @throws MissingResourceException if configuration was not found
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
@@ -215,8 +215,22 @@ public class ConfigManager {
     loadAllConfigs(plugin);
   }
   
-  public static void reloadConfig(String name, AchievementBorder plugin) {
+  /**
+   * Reload a given {@link YamlConfiguration} from disk
+   *
+   * @param name The name of the configuration to reload
+   * @param plugin The current plugin
+   * @throws MissingResourceException if the requested configuration could not be found
+   * @author sh0ckR6
+   * @since latest
+   */
+  public static void reloadConfig(String name, AchievementBorder plugin) throws MissingResourceException {
+    if (configurations.stream().filter(config -> config.name.equals(name)).findFirst().isEmpty()) {
+      throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
+    }
+    
     Configuration configuration = configurations.stream().filter(config -> config.name.equals(name)).findFirst().get();
+    
     configurations.remove(configuration);
     configuration.yamlConfig = YamlConfiguration.loadConfiguration(configuration.file);
     configurations.add(configuration);

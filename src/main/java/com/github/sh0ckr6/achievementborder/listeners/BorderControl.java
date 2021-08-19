@@ -196,6 +196,8 @@ public class BorderControl implements Listener {
    *
    * @param player The player to check completed advancements for
    * @return A list of the player's completed advancements (if any)
+   * @author sh0ckR6
+   * @since 1.0
    */
   private List<Advancement> getCompletedAdvancements(Player player) {
     // Loop through all advancements and return a list of valid advancements that the player has completed.
