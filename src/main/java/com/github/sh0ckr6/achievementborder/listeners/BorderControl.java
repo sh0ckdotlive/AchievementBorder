@@ -3,10 +3,10 @@ package com.github.sh0ckr6.achievementborder.listeners;
 import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Listener class to handle events relating to controlling the world border
@@ -72,7 +73,7 @@ public class BorderControl implements Listener {
       }
     }
     
-    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
+    updateBorders();
   }
   
   /**
@@ -101,17 +102,7 @@ public class BorderControl implements Listener {
       }
     }
   
-    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
-  }
-  
-  /**
-   * Helper function to update a world's border.
-   * @param border The border to update
-   * @author sh0ckR6
-   * @since 1.0
-   */
-  private void updateBorder(WorldBorder border) {
-    border.setSize(plugin.advancements.size() * 5 + ConfigManager.<Integer>readFromConfig("config", "starting-size"), 1);
+    updateBorders();
   }
   
   /**
@@ -157,7 +148,27 @@ public class BorderControl implements Listener {
       }
     }
     
-    updateBorder(Bukkit.getWorlds().get(0).getWorldBorder());
+    updateBorders();
+  }
+  
+  /**
+   * Helper function to update a world's border.
+   * @author sh0ckR6
+   * @since 1.0
+   */
+  private void updateBorders() {
+    // Get a list of every registered world that needs to have its border updated
+    YamlConfiguration config = ConfigManager.getConfig("config");
+    Map<String, Object> worldBorders = config.getConfigurationSection("borders").getValues(false);
+    for (String worldName : worldBorders.keySet()) {
+      
+      try {
+        Bukkit.getWorld(worldName).getWorldBorder().setSize(((boolean) worldBorders.get(worldName) ? plugin.advancements.size() * 5 + ConfigManager.<Integer>readFromConfig("config", "starting-size") : 60000000), 1);
+      } catch (NullPointerException e) {
+        // If we couldn't get the world, log it
+        Bukkit.getLogger().severe("Invalid world name found in 'config.yml/borders': " + worldName);
+      }
+    }
   }
   
   /**
