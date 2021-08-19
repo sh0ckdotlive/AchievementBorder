@@ -21,6 +21,12 @@ public abstract class BaseCommand implements CommandExecutor {
    * @since 1.1
    */
   protected AchievementBorder plugin;
+  /**
+   * The name of this command
+   *
+   * @since latest
+   */
+  protected String name;
   
   /**
    * Registers this class as a {@link CommandExecutor} for the given command
@@ -32,6 +38,7 @@ public abstract class BaseCommand implements CommandExecutor {
    */
   public BaseCommand(AchievementBorder plugin, String name) {
     this.plugin = plugin;
+    this.name = name;
     plugin.getCommand(name).setExecutor(this);
   }
   
