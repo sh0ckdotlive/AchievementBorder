@@ -216,7 +216,20 @@ public class ConfigManager {
   }
   
   public static void reloadConfig(String name, AchievementBorder plugin) {
-  
+    Configuration configuration = configurations.stream().filter(config -> config.name.equals(name)).findFirst().get();
+    configurations.remove(configuration);
+    configuration.yamlConfig = YamlConfiguration.loadConfiguration(configuration.file);
+    configurations.add(configuration);
   }
   
+  /**
+   * Return a list of all registered {@link Configuration}s
+   *
+   * @return The list of registered {@link Configuration}s
+   * @author sh0ckR6
+   * @since latest
+   */
+  public static List<Configuration> getConfigurations() {
+    return configurations;
+  }
 }
