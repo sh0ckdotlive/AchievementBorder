@@ -55,6 +55,31 @@ body:
         If you cannot reproduce this bug, please type something like "N/A"
     validations:
       required: true
+  # Expected Behaviour
+  - type: textarea
+    attributes:
+      label: Expected Behaviour
+      description: What should happen?
+      placeholder: |
+        Describe what should happen when you follow the steps above
+    validations:
+      required: true
+  # Actual Behaviour
+  - type: textarea
+    attributes:
+      label: Actual Behaviour
+      description: What actually happened?
+      placeholder: |
+        Describe what actually happened when you followed the steps above
+    validations:
+      required: true
+  # Current Workarounds
+  - type: textarea
+    attributes:
+      label: Current Workarounds
+      description: How can you get around this issue until it gets fixed?
+      placeholder: |
+        Describe how you can get around this issue. Leave blank if it is unavoidable
   # Anything else
   - type: textarea
     attributes:
@@ -62,5 +87,6 @@ body:
       description: Is there anything else you would like to add?
       placeholder: |
         Add any extra information you have here.
+
 
         Pro-tip: You can drag files into this area! You can upload information like log files to this box!
