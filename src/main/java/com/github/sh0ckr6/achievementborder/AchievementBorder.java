@@ -78,6 +78,9 @@ public final class AchievementBorder extends JavaPlugin {
     config.addDefault("borders", borderWorlds);
     config.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
+    
+    // Reload after setting defaults
+    ConfigManager.reloadConfigs(this);
   }
   
   /**
