@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Set;
 
@@ -224,5 +225,27 @@ public class ConfigManager {
   public static void reloadConfigs(AchievementBorder plugin) {
     configurations = new HashMap<>();
     loadAllConfigs(plugin);
+  }
+  
+  /**
+   * Get a list of all {@link YamlConfiguration}s currently registered
+   *
+   * @return The list of all registered {@link YamlConfiguration}s
+   * @author sh0ckR6
+   * @since latest
+   */
+  public static List<YamlConfiguration> getAllConfigs() {
+    return configurations.keySet().stream().toList();
+  }
+  
+  /**
+   * Get a list of all {@link File}s current registered
+   *
+   * @return The list of all registered {@link File}s
+   * @author sh0ckR6
+   * @since latest
+   */
+  public static List<File> getAllConfigFiles() {
+    return configurations.values().stream().toList();
   }
 }
