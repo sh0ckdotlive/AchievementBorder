@@ -5,9 +5,9 @@ import com.github.sh0ckr6.achievementborder.commands.ConfigCommand;
 import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
+import com.github.sh0ckr6.achievementborder.managers.Configuration;
 import org.bukkit.Material;
 import org.bukkit.advancement.Advancement;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -61,11 +61,11 @@ public final class AchievementBorder extends JavaPlugin {
     ConfigManager.createIfNotPresent("config", this);
     
     // Setup config.yml defaults
-    YamlConfiguration config = ConfigManager.getConfig("config");
-    config.addDefault("setup-complete", false);
-    config.addDefault("starting-size", 1);
-    config.addDefault("advancements", new String[]{});
-    config.options().copyDefaults(true);
+    Configuration config = ConfigManager.getConfig("config");
+    config.yamlConfig.addDefault("setup-complete", false);
+    config.yamlConfig.addDefault("starting-size", 1);
+    config.yamlConfig.addDefault("advancements", new String[]{});
+    config.yamlConfig.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
   }
   

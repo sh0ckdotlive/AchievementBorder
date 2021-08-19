@@ -7,9 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.MissingResourceException;
-import java.util.Set;
+import java.util.*;
 
 /** Utilities for configuration files
  *
@@ -22,7 +20,7 @@ public class ConfigManager {
    *
    * @since 1.1
    */
-  private static HashMap<YamlConfiguration, File> configurations = new HashMap<>();
+  private static List<Configuration> configurations = new ArrayList<>();
   
   /** Loads all configurations and caches them
    * @param plugin The current plugin
@@ -41,7 +39,7 @@ public class ConfigManager {
     for (File file : plugin.getDataFolder().listFiles()) {
       System.out.println(file.getAbsolutePath());
       YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
-      configurations.put(configuration, file);
+      configurations.add(new Configuration(configuration, file, file.getName().substring(0, file.getName().length() - 4)));
     }
   }
   
@@ -66,20 +64,18 @@ public class ConfigManager {
       e.printStackTrace();
     }
     
-    configurations.put(YamlConfiguration.loadConfiguration(configFile), configFile);
+    configurations.add(new Configuration(YamlConfiguration.loadConfiguration(configFile), configFile, configName));
   }
   
   /** Checks if a configuration exists
    * @param configName The name of the configuration
-   * @param plugin The current plugin
    *
    * @return true if the given configuration was found
    * @author Kalcoder (sh0ckR6)
    * @since 1.1
    */
-  public static boolean configurationExists(String configName, JavaPlugin plugin) {
-    File configFile = new File(plugin.getDataFolder(), configName + ".yml");
-    return configFile.exists();
+  public static boolean configurationExists(String configName) {
+    return configurations.stream().anyMatch(configuration -> configuration.name.equals(configName));
   }
   
   /**
@@ -92,7 +88,7 @@ public class ConfigManager {
    * @since 1.1
    */
   public static boolean createIfNotPresent(String configName, JavaPlugin plugin) {
-    boolean exists = configurationExists(configName, plugin);
+    boolean exists = configurationExists(configName);
     
     if (!exists) createNewConfig(configName, plugin);
     return !exists;
@@ -108,9 +104,8 @@ public class ConfigManager {
    * @since 1.1
    */
   public static Set<String> getAllKeysFromConfig(String name, Boolean deep) throws MissingResourceException {
-    for (File file : configurations.values()) {
-      System.out.println("file.getName() = " + file.getName().substring(0, file.getName().length() - 4));
-      if (file.getName().substring(0, file.getName().length() - 4).equalsIgnoreCase(name)) return YamlConfiguration.loadConfiguration(file).getKeys(deep);
+    for (Configuration configuration : configurations) {
+      if (configuration.name.equalsIgnoreCase(name)) return configuration.yamlConfig.getKeys(deep);
     }
     throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
   }
@@ -125,8 +120,8 @@ public class ConfigManager {
    * @since 1.1
    */
   public static <T> T readFromConfig(String name, String path) throws MissingResourceException {
-    for (File file : configurations.values()) {
-      if (file.getName().equals(name + ".yml")) return (T) YamlConfiguration.loadConfiguration(file).get(path);
+    for (Configuration configuration : configurations) {
+      if (configuration.name.equals(name)) return (T) configuration.yamlConfig.get(path);
     }
     throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
   }
@@ -165,12 +160,11 @@ public class ConfigManager {
    * @since 1.1
    */
   public static <T> void setInConfig(String name, String path, T value) throws MissingResourceException {
-    for (File file : configurations.values()) {
-      if (file.getName().equalsIgnoreCase(name + ".yml")) {
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        config.set(path, value);
+    for (Configuration configuration : configurations) {
+      if (configuration.name.equalsIgnoreCase(name)) {
+        configuration.yamlConfig.set(path, value);
         try {
-          config.save(file);
+          configuration.yamlConfig.save(configuration.file);
           return;
         } catch (IOException e) {
           e.printStackTrace();
@@ -181,34 +175,29 @@ public class ConfigManager {
   }
   
   /**
-   * Get a {@link YamlConfiguration} by name
+   * Get a {@link Configuration} by name
    *
    * @param name The name of the configuration
    * @return The found configuration, if any
-   * @throws MissingResourceException If the requested configuration could not be found
    * @author sh0ckR6
    * @since 1.1
    */
-  public static YamlConfiguration getConfig(String name) throws MissingResourceException {
-    for (YamlConfiguration config : configurations.keySet()) {
-      if (configurations.get(config).getName().equals(name + ".yml")) return config;
-    }
-    throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
+  public static Configuration getConfig(String name) throws MissingResourceException {
+    return configurations.stream().filter(config -> config.name.equals(name)).findFirst().get();
   }
   
   /**
    * Save a {@link YamlConfiguration} to the corresponding {@link File}
    *
-   * @param config The {@link YamlConfiguration} to save
+   * @param config The {@link Configuration} to save
    * @throws MissingResourceException If the requested configuration could not be found
    * @author sh0ckR6
    * @since 1.1
    */
-  public static void saveConfig(YamlConfiguration config) throws MissingResourceException {
-    File configFile = configurations.get(config);
-    if (configFile == null) throw new MissingResourceException("The requested configuration file could not be found!", config.getName() + ".yml", config.getName());
+  public static void saveConfig(Configuration config) throws MissingResourceException {
+    if (config.file == null) throw new MissingResourceException("The requested configuration file could not be found!", config.name + ".yml", config.name);
     try {
-      config.save(configFile);
+      config.yamlConfig.save(config.file);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -222,7 +211,12 @@ public class ConfigManager {
    * @since 1.1
    */
   public static void reloadConfigs(AchievementBorder plugin) {
-    configurations = new HashMap<>();
+    configurations = new ArrayList<>();
     loadAllConfigs(plugin);
   }
+  
+  public static void reloadConfig(String name, AchievementBorder plugin) {
+  
+  }
+  
 }
