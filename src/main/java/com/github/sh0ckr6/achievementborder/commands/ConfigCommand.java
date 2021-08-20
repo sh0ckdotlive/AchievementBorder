@@ -70,12 +70,34 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
   @Override
   public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
     List<String> tabList = new ArrayList<>();
-    if (args.length == 1) {
-      tabList.addAll(List.of("reload"));
-    } else if (args.length == 2) {
-      if (args[0].equals("reload")) {
-        tabList.addAll(ConfigManager.getConfigurations().stream().map(config -> config.name).toList());
-        tabList.add("*");
+    switch (args.length) {
+      // Generate tab completion for first argument
+      case 1 -> tabList.addAll(List.of("reload", "edit"));
+      // Generate tab completion for second argument
+      case 2 -> {
+        switch (args[0]) {
+          // Generate tab completion for /config reload
+          case "reload" -> {
+            tabList.addAll(ConfigManager.getConfigurations().stream().map(config -> config.name).toList());
+            tabList.add("*");
+          }
+          // Generate tab completion for /config edit
+          case "edit" -> tabList.addAll(ConfigManager.getConfigurations().stream().map(config -> config.name).toList());
+        }
+      }
+      // Generate tab completion for third argument
+      case 3 -> {
+        // Generate tab completion for /config edit <config>
+        if (args[0].equalsIgnoreCase("edit")) {
+          tabList.addAll(ConfigManager.getAllKeysFromConfig(args[1], true));
+        }
+      }
+      // Generate tab completion for fourth argument
+      case 4 -> {
+        // Generate tab completion for /config edit <config> <boolean value path>
+        if (args[0].equalsIgnoreCase("edit") && ConfigManager.readFromConfig(args[1], args[2]) instanceof Boolean) {
+          tabList.addAll(List.of("true", "false"));
+        }
       }
     }
     return tabList;
