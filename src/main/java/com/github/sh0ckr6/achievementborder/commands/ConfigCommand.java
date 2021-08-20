@@ -129,6 +129,14 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
     }
   }
   
+  /**
+   * Handle <code>edit</code> subcommand
+   *
+   * @param sender The {@link CommandSender} that sent the command
+   * @param args The arguments of the subcommand
+   * @author sh0ckR6
+   * @since latest
+   */
   private void handleEdit(CommandSender sender, String[] args) {
     // Check if the user has provided arguments
     if (args.length < 3) {
