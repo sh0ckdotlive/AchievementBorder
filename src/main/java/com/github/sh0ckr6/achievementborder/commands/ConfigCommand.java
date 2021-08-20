@@ -146,6 +146,11 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
   
     Object oldValue = ConfigManager.readFromConfig(config, path);
     
+    if (oldValue == null) {
+      sender.sendMessage(ChatColor.RED + "The value you are trying to edit doesn't exist! Please check your spelling and try again");
+      return;
+    }
+    
     // Check if the value we are trying to edit can be edited This must be done because all type information is lost at
     // runtime, which makes editing the files in-game annoyingly difficult.
     if (!(oldValue instanceof Integer) && !(oldValue instanceof String) && !(oldValue instanceof Float) && !(oldValue instanceof Boolean)) {
