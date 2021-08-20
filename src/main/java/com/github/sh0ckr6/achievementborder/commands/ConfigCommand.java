@@ -2,6 +2,7 @@ package com.github.sh0ckr6.achievementborder.commands;
 
 import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,10 +10,10 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.MissingResourceException;
 
 /**
  * {@link BaseCommand} class representing the <code>/config</code> command
@@ -47,36 +48,60 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
    */
   @Override
   protected boolean execute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-    switch (args[0]) {
-      case "reload":
-        ConfigManager.reloadConfigs(plugin);
-        break;
-      case "edit":
-        handleEdit(sender, Arrays.copyOfRange(args, 0, args.length));
+    if (args[0].equalsIgnoreCase("reload")) {
+      handleReload(sender, Arrays.copyOfRange(args, 1, args.length));
     }
     return true;
   }
   
-  private void handleEdit(CommandSender sender, String[] args) {
-    
-  }
-  
+  /**
+   * Generate tab completion for the arguments of this command
+   *
+   * @param sender The {@link CommandSender} of the command
+   * @param command The {@link Command} that was run
+   * @param alias The alias name of this command that was used
+   * @param args The current list of arguments
+   * @return A list of options for tab completion
+   * @author sh0ckR6
+   * @since latest
+   */
   @Override
   public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
     List<String> tabList = new ArrayList<>();
     if (args.length == 1) {
-      tabList.addAll(List.of("reload", "edit"));
-      return tabList;
+      tabList.addAll(List.of("reload"));
     } else if (args.length == 2) {
-      if (args[0].equalsIgnoreCase("edit")) {
-        for (File file : ConfigManager.getAllConfigFiles()) {
-          tabList.add(file.getName().substring(0, file.getName().length() - 4));
-        }
-        return tabList;
+      if (args[0].equals("reload")) {
+        tabList.addAll(ConfigManager.getConfigurations().stream().map(config -> config.name).toList());
+        tabList.add("*");
       }
-    } else if (args.length == 3) {
-      tabList.addAll(ConfigManager.getAllKeysFromConfig(args[1], true));
     }
     return tabList;
+  }
+  
+  /**
+   * Handle <code>reload</code> subcommand
+   *
+   * @param sender The {@link CommandSender} that sent the command
+   * @param args The arguments of this subcommand
+   * @author sh0ckR6
+   * @since latest
+   */
+  private void handleReload(CommandSender sender, String[] args) {
+    String configName = args[0];
+    
+    if (configName.equals("*")) {
+      ConfigManager.reloadConfigs(plugin);
+      sender.sendMessage(ChatColor.GREEN + "Reloaded all configuration files!");
+      return;
+    }
+    
+    try {
+      ConfigManager.reloadConfig(configName, plugin);
+      sender.sendMessage(ChatColor.GREEN + "Reloaded the configuration '" + ChatColor.GOLD + name + ChatColor.GREEN + '!');
+    } catch (MissingResourceException e) {
+      sender.sendMessage(ChatColor.RED + "The requested configuration file could not be found. Check you spelling and try again!");
+      sender.sendMessage(ChatColor.RED + "If this issue is repeating and you know it shouldn't, make a " + ChatColor.GOLD + "bug report" + ChatColor.RED + " at https://github.com/sh0ckR6/AchievementBorder/issues/new/choose.");
+    }
   }
 }

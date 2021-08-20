@@ -22,7 +22,7 @@ public abstract class BaseCommand implements CommandExecutor {
    */
   protected AchievementBorder plugin;
   /**
-   * This command's name
+   * The name of this command
    *
    * @since latest
    */

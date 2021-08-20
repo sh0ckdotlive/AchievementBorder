@@ -2,11 +2,11 @@ package com.github.sh0ckr6.achievementborder.listeners;
 
 import com.github.sh0ckr6.achievementborder.AchievementBorder;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
+import com.github.sh0ckr6.achievementborder.managers.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -158,8 +158,8 @@ public class BorderControl implements Listener {
    */
   private void updateBorders() {
     // Get a list of every registered world that needs to have its border updated
-    YamlConfiguration config = ConfigManager.getConfig("config");
-    Map<String, Object> worldBorders = config.getConfigurationSection("borders").getValues(false);
+    Configuration config = ConfigManager.getConfig("config");
+    Map<String, Object> worldBorders = config.yamlConfig.getConfigurationSection("borders").getValues(false);
     for (String worldName : worldBorders.keySet()) {
       
       try {
@@ -196,6 +196,8 @@ public class BorderControl implements Listener {
    *
    * @param player The player to check completed advancements for
    * @return A list of the player's completed advancements (if any)
+   * @author sh0ckR6
+   * @since 1.0
    */
   private List<Advancement> getCompletedAdvancements(Player player) {
     // Loop through all advancements and return a list of valid advancements that the player has completed.

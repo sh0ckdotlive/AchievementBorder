@@ -6,11 +6,11 @@ import com.github.sh0ckr6.achievementborder.listeners.BorderControl;
 import com.github.sh0ckr6.achievementborder.listeners.MobControl;
 import com.github.sh0ckr6.achievementborder.listeners.WorldSetup;
 import com.github.sh0ckr6.achievementborder.managers.ConfigManager;
-import org.bukkit.Bukkit;
+import com.github.sh0ckr6.achievementborder.managers.Configuration;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -18,6 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class representing the current {@link JavaPlugin}
+ *
+ * {@link #onEnable()} is the main entry point of the plugin
+ *
+ * @author sh0ckR6
+ * @author gtaEPIC
+ * @since 1.0
+ */
 public final class AchievementBorder extends JavaPlugin {
   
   public List<Advancement> advancements = new ArrayList<>();
@@ -26,6 +35,7 @@ public final class AchievementBorder extends JavaPlugin {
    * Plugin setup
    *
    * @author sh0ckR6
+   * @author gtaEPIC
    * @since 1.0
    */
   @Override
@@ -67,17 +77,20 @@ public final class AchievementBorder extends JavaPlugin {
     ConfigManager.createIfNotPresent("config", this);
     
     // Setup config.yml defaults
-    YamlConfiguration config = ConfigManager.getConfig("config");
-    config.addDefault("setup-complete", false);
-    config.addDefault("starting-size", 1);
-    config.addDefault("advancements", new String[]{});
+    Configuration config = ConfigManager.getConfig("config");
+    config.yamlConfig.addDefault("setup-complete", false);
+    config.yamlConfig.addDefault("starting-size", 1);
+    config.yamlConfig.addDefault("advancements", new String[]{});
     Map<String, Boolean> borderWorlds = new HashMap<>();
     for (World world : Bukkit.getWorlds()) {
       borderWorlds.put(world.getName(), true);
     }
-    config.addDefault("borders", borderWorlds);
-    config.options().copyDefaults(true);
+    config.yamlConfig.addDefault("borders", borderWorlds);
+    config.yamlConfig.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
+    
+    // Reload after setting defaults
+    ConfigManager.reloadConfigs(this);
   }
   
   /**
