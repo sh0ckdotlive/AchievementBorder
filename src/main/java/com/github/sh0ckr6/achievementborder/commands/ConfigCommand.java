@@ -51,6 +51,7 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
     switch (args[0]) {
       case "reload" -> handleReload(sender, Arrays.copyOfRange(args, 1, args.length));
       case "edit" -> handleEdit(sender, Arrays.copyOfRange(args, 1, args.length));
+      case "reset" -> handleReset(sender, Arrays.copyOfRange(args, 1, args.length));
       default -> sender.sendMessage(ChatColor.RED + "Option " + args[0] + " not found! Please check your spelling and try again!");
     }
     return true;
@@ -72,12 +73,12 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
     List<String> tabList = new ArrayList<>();
     switch (args.length) {
       // Generate tab completion for first argument
-      case 1 -> tabList.addAll(List.of("reload", "edit"));
+      case 1 -> tabList.addAll(List.of("reload", "edit", "reset"));
       // Generate tab completion for second argument
       case 2 -> {
         switch (args[0]) {
-          // Generate tab completion for /config reload
-          case "reload" -> {
+          // Generate tab completion for /config reload|reset
+          case "reload", "reset" -> {
             tabList.addAll(ConfigManager.getConfigurations().stream().map(config -> config.name).toList());
             tabList.add("*");
           }
@@ -112,6 +113,11 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
    * @since latest
    */
   private void handleReload(CommandSender sender, String[] args) {
+    if (args.length == 0) {
+      sender.sendMessage(ChatColor.RED + "You have provided too little arguments! Check your usage and try again!");
+      return;
+    }
+
     String configName = args[0];
     
     if (configName.equals("*")) {
@@ -201,5 +207,36 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
                        + ChatColor.GOLD + path
                        + ChatColor.GREEN + "! New value: "
                        + ChatColor.GOLD + value);
+  }
+
+  /**
+   * Handle <code>reset</code> subcommand
+   *
+   * @param sender The {@link CommandSender} that sent the command
+   * @param args The arguments of the subcommand
+   * @author sh0ckR6
+   * @since latest
+   */
+  private void handleReset(CommandSender sender, String[] args) {
+    if (args.length == 0) {
+      sender.sendMessage(ChatColor.RED + "You have provided too little arguments! Check your usage and try again!");
+      return;
+    }
+
+    String configName = args[0];
+
+    if (configName.equals("*")) {
+      ConfigManager.resetAllConfigs(plugin);
+      sender.sendMessage(ChatColor.GREEN + "Reset all configuration files to their defaults!");
+      return;
+    }
+
+    try {
+      ConfigManager.reloadConfig(configName, plugin);
+      sender.sendMessage(ChatColor.GREEN + "Reset the configuration '" + ChatColor.GOLD + name + ChatColor.GREEN + " to its defaults!");
+    } catch (MissingResourceException e) {
+      sender.sendMessage(ChatColor.RED + "The requested configuration file could not be found. Check you spelling and try again!");
+      sender.sendMessage(ChatColor.RED + "If this issue is repeating and you know it shouldn't, make a " + ChatColor.GOLD + "bug report" + ChatColor.RED + " at https://github.com/sh0ckR6/AchievementBorder/issues/new/choose.");
+    }
   }
 }

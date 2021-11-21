@@ -78,14 +78,14 @@ public final class AchievementBorder extends JavaPlugin {
     
     // Setup config.yml defaults
     Configuration config = ConfigManager.getConfig("config");
-    config.yamlConfig.addDefault("setup-complete", false);
-    config.yamlConfig.addDefault("starting-size", 1);
-    config.yamlConfig.addDefault("advancements", new String[]{});
+    config.addDefault("setup-complete", false);
+    config.addDefault("starting-size", 1);
+    config.addDefault("advancements", new String[]{});
     Map<String, Boolean> borderWorlds = new HashMap<>();
     for (World world : Bukkit.getWorlds()) {
       borderWorlds.put(world.getName(), true);
     }
-    config.yamlConfig.addDefault("borders", borderWorlds);
+    config.addDefault("borders", borderWorlds);
     config.yamlConfig.options().copyDefaults(true);
     ConfigManager.saveConfig(config);
     
