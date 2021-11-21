@@ -235,15 +235,21 @@ public class ConfigManager {
    * @since latest
    */
   public static void reloadConfig(String name, AchievementBorder plugin) throws MissingResourceException {
-    if (configurations.stream().filter(config -> config.name.equals(name)).findFirst().isEmpty()) {
-      throw new MissingResourceException("The requested configuration file could not be found!", name + ".yml", name);
-    }
+    reloadConfig(getConfig(name), plugin);
+  }
 
-    Configuration configuration = configurations.stream().filter(config -> config.name.equals(name)).findFirst().get();
-
-    configurations.remove(configuration);
-    configuration.yamlConfig = YamlConfiguration.loadConfiguration(configuration.file);
-    configurations.add(configuration);
+  /**
+   * Reload a given {@link Configuration} from disk
+   *
+   * @param config The current configuration
+   * @param plugin The current plugin
+   * @author sh0ckR6
+   * @since latest
+   */
+  public static void reloadConfig(Configuration config, AchievementBorder plugin) {
+    configurations.remove(config);
+    config.yamlConfig = YamlConfiguration.loadConfiguration(config.file);
+    configurations.add(config);
   }
 
   /**
@@ -267,8 +273,18 @@ public class ConfigManager {
    * @since latest
    */
   public void resetConfig(String name, AchievementBorder plugin) throws MissingResourceException {
-    Configuration config = getConfig(name);
+    resetConfig(getConfig(name), plugin);
+  }
 
+  /**
+   *  Reset a configuration to its defaults
+   *
+   * @param config   The configuration to reload
+   * @param plugin The current plugin
+   * @author sh0ckR6
+   * @since latest
+   */
+  public void resetConfig(Configuration config, AchievementBorder plugin) {
     config.file.delete();
 
     // Reload the configuration from a new blank file
@@ -290,6 +306,6 @@ public class ConfigManager {
       e.printStackTrace();
     }
 
-    reloadConfig(name, plugin);
+    reloadConfig(config, plugin);
   }
 }
