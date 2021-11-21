@@ -113,6 +113,11 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
    * @since latest
    */
   private void handleReload(CommandSender sender, String[] args) {
+    if (args.length == 0) {
+      sender.sendMessage(ChatColor.RED + "You have provided too little arguments! Check your usage and try again!");
+      return;
+    }
+
     String configName = args[0];
     
     if (configName.equals("*")) {
@@ -213,6 +218,11 @@ public class ConfigCommand extends BaseCommand implements TabCompleter {
    * @since latest
    */
   private void handleReset(CommandSender sender, String[] args) {
+    if (args.length == 0) {
+      sender.sendMessage(ChatColor.RED + "You have provided too little arguments! Check your usage and try again!");
+      return;
+    }
+
     String configName = args[0];
 
     if (configName.equals("*")) {
