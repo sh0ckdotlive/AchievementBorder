@@ -272,7 +272,7 @@ public class ConfigManager {
    * @author sh0ckR6
    * @since latest
    */
-  public void resetConfig(String name, AchievementBorder plugin) throws MissingResourceException {
+  public static void resetConfig(String name, AchievementBorder plugin) throws MissingResourceException {
     resetConfig(getConfig(name), plugin);
   }
 
@@ -284,7 +284,7 @@ public class ConfigManager {
    * @author sh0ckR6
    * @since latest
    */
-  public void resetConfig(Configuration config, AchievementBorder plugin) {
+  public static void resetConfig(Configuration config, AchievementBorder plugin) {
     config.file.delete();
 
     // Reload the configuration from a new blank file
