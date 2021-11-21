@@ -308,4 +308,16 @@ public class ConfigManager {
 
     reloadConfig(config, plugin);
   }
+
+  /**
+   * Reset all configurations
+   *
+   * @author sh0ckR6
+   * @since latest
+   */
+  public static void resetAllConfigs(AchievementBorder plugin) {
+    for (Configuration config : configurations) {
+      resetConfig(config, plugin);
+    }
+  }
 }
